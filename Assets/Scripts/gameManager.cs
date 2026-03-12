@@ -4,7 +4,7 @@ using Photon.Realtime;
 
 public class gameManager : MonoBehaviourPunCallbacks
 {
-    public static gamemManager instance;
+    public static gameManager instance;
 
     private void Awake()
     {
@@ -43,15 +43,15 @@ public class gameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(roomCode);
     }
 
-    public override void onJoinedRoom()
+    public override void OnJoinedRoom()
     {
         Debug.Log("Joined room successfully");
         //load scene here
     }
 
-    public override
+    public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.Log("Failed to join room);
+        Debug.Log("Failed to join room: " + message);
     }
 }   
 
