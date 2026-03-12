@@ -46,7 +46,7 @@ public class gameManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined room successfully");
-        //load scene here
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
