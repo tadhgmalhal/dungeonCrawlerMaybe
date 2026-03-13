@@ -10,8 +10,10 @@ public class floorGen : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject wallCapPrefab;
     [SerializeField] private GameObject portalPrefab;
     [SerializeField] private GameObject playerPrefab;
+
     private List<Room> placedRooms = new List<Room>();
     private List<roomConnection> openConnectors = new List<roomConnection>();
+    private List<roomConnection> allConnectors = new List<roomConnection>();
 
     void Start()
     {
@@ -37,6 +39,7 @@ public class floorGen : MonoBehaviourPunCallbacks
         foreach (roomConnection connector in startRoomComponent.connectors)
         {
             openConnectors.Add(connector);
+            allConnectors.Add(connector);
         }
 
         int attempt = 0;
@@ -74,6 +77,7 @@ public class floorGen : MonoBehaviourPunCallbacks
                 if (!connector.isConnected)
                 {
                     openConnectors.Add(connector);
+                    allConnectors.Add(connector);
                 }
             }
         }
@@ -81,12 +85,12 @@ public class floorGen : MonoBehaviourPunCallbacks
         Vector3 portalPos = placedRooms[0].transform.position;
         Instantiate(portalPrefab, portalPos, Quaternion.identity);
 
-        // spawn portal in middle room
         int middleIndex = placedRooms.Count / 2;
-        // this will be the descend chute later
 
         Vector3 spawnPos = placedRooms[0].transform.position + Vector3.up * 1f;
         PhotonNetwork.Instantiate("Player", spawnPos, Quaternion.identity);
+
+        Debug.Log("Open connectors remaining: " + openConnectors.Count);
 
         sealOpenConnectors();
         Debug.Log("Generated " + placedRooms.Count + " rooms.");
@@ -94,20 +98,18 @@ public class floorGen : MonoBehaviourPunCallbacks
 
     void alignRooms(roomConnection current, roomConnection incoming)
     {
-        // rotate so incoming connector faces opposite to current connector
         float angle = Vector3.SignedAngle(
-            incoming.transform.forward, 
-            -current.transform.forward, 
+            incoming.transform.forward,
+            -current.transform.forward,
             Vector3.up
         );
-        
+
         incoming.transform.parent.RotateAround(
             incoming.transform.position,
             Vector3.up,
             angle
         );
 
-        // snap positions together
         Vector3 offset = current.transform.position - incoming.transform.position;
         incoming.transform.parent.position += offset;
     }
@@ -119,8 +121,6 @@ public class floorGen : MonoBehaviourPunCallbacks
         foreach (Room placedRoom in placedRooms)
         {
             Bounds placedBounds = getRoomBounds(placedRoom.gameObject);
-
-            // shrink bounds slightly to allow wall touching
             placedBounds.Expand(-0.5f);
 
             if (newBounds.Intersects(placedBounds))
@@ -142,8 +142,10 @@ public class floorGen : MonoBehaviourPunCallbacks
 
     void sealOpenConnectors()
     {
-        foreach (roomConnection connector in openConnectors)
+        int sealedCount = 0;
+        foreach (roomConnection connector in allConnectors)
         {
+            if (connector == null) continue;
             if (connector.isConnected) continue;
 
             GameObject wall = Instantiate(
@@ -152,8 +154,9 @@ public class floorGen : MonoBehaviourPunCallbacks
                 connector.transform.rotation
             );
 
-            // align wall to face inward
             wall.transform.rotation = Quaternion.LookRotation(-connector.transform.forward);
+            sealedCount++;
         }
+        Debug.Log("Sealed " + sealedCount + " connectors");
     }
 }

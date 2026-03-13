@@ -281,7 +281,7 @@ MonoBehaviour:
   - {fileID: 8904729288112592567, guid: ffd494622b19eea259da9d644a6f3151, type: 3}
   - {fileID: 8567888575226203829, guid: abb49cc578490077fb6eceae5068ad2a, type: 3}
   - {fileID: 4680145903853694492, guid: ad35e1d2d407c1f1f97f270d728e49ac, type: 3}
-  roomCount: 100
+  roomCount: 455
   wallCapPrefab: {fileID: 739742010051120722, guid: b887710627e1b6a1c94183fb0836d37a, type: 3}
   portalPrefab: {fileID: 6161342299557638607, guid: e5822a9509d1ab50fbf7babcc5707da5, type: 3}
   playerPrefab: {fileID: 6190984557778849952, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
