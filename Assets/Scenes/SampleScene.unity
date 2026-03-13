@@ -532,17 +532,13 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -7301538891063717651, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
-      propertyPath: ObservedComponents.Array.size
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1698937634460903337, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.35356
       objectReference: {fileID: 0}
     - target: {fileID: 1698937634460903337, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.24749
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1698937634460903337, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
       propertyPath: m_LocalPosition.z
