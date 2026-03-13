@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviourPun
     public float staminaRegenIdle = 20f;
     public float heavyStaminaDrainMultiplier = 1.3f;
 
-    // internal state
     private Rigidbody rb;
     private Transform cam;
     private PlayerControls controls;
@@ -37,10 +36,10 @@ public class PlayerMovement : MonoBehaviourPun
     private float coyoteTimer = 0f;
     private bool wasGrounded = false;
 
-    // sack state — will be set by inventory system later
-    [HideInInspector] public int sackStage = 0; // 0 = empty, 1 = stage 1 (7+), 2 = full (10)
+    //sack mechanic, to be added
+    [HideInInspector] public int sackStage = 0;
 
-    // footstep noise — will be read by enemy AI later
+    //footstep noise level, to be added
     [HideInInspector] public float noiseLevel = 0f;
 
     void Awake()
@@ -81,13 +80,11 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        // mouse look
         verticalRotation -= lookInput.y * mouseSensitivity * Time.deltaTime * 100f;
         verticalRotation = Mathf.Clamp(verticalRotation, -80f, 80f);
         cam.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
         transform.Rotate(Vector3.up * lookInput.x * mouseSensitivity * Time.deltaTime * 100f);
 
-        // coyote time
         bool grounded = IsGrounded();
         if (grounded)
         {
@@ -98,7 +95,6 @@ public class PlayerMovement : MonoBehaviourPun
             coyoteTimer -= Time.deltaTime;
         }
 
-        // jump
         if (jumpPressed && coyoteTimer > 0f)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -107,7 +103,6 @@ public class PlayerMovement : MonoBehaviourPun
         }
         jumpPressed = false;
 
-        // stamina
         HandleStamina(grounded);
 
         wasGrounded = grounded;
@@ -130,7 +125,7 @@ public class PlayerMovement : MonoBehaviourPun
             // heavy sack can only regen while standing still
             if (isHeavy && isMoving)
             {
-                // no regen
+                
             }
             else if (isMoving)
             {
@@ -175,7 +170,6 @@ public class PlayerMovement : MonoBehaviourPun
         if (!IsGrounded())
             rb.AddForce(Vector3.up * gravityForce, ForceMode.Acceleration);
 
-        // noise level
         if (!isMoving)
             noiseLevel = 0f;
         else if (activelySprinting)

@@ -1,16 +1,29 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Photon.Pun;
 
-public class floorGen : MonoBehaviour
+public class floorGen : MonoBehaviourPunCallbacks
 {
     [Header("Room Settings")]
-    public GameObject[] roomPrefabs;
-    public int roomCount = 10;
-
+    [SerializeField] private GameObject[] roomPrefabs;
+    [SerializeField] private int roomCount = 10;
+    [SerializeField] private GameObject wallCapPrefab;
+    [SerializeField] private GameObject portalPrefab;
+    [SerializeField] private GameObject playerPrefab;
     private List<Room> placedRooms = new List<Room>();
     private List<roomConnection> openConnectors = new List<roomConnection>();
 
     void Start()
+    {
+        PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinOrCreateRoom("test", new Photon.Realtime.RoomOptions { MaxPlayers = 4 }, null);
+    }
+
+    public override void OnJoinedRoom()
     {
         generate();
     }
@@ -44,7 +57,6 @@ public class floorGen : MonoBehaviour
 
             alignRooms(currentConnector, newConnector);
 
-            // wait for physics to update
             Physics.SyncTransforms();
 
             if (checkOverlap(newRoomObject))
@@ -66,6 +78,17 @@ public class floorGen : MonoBehaviour
             }
         }
 
+        Vector3 portalPos = placedRooms[0].transform.position;
+        Instantiate(portalPrefab, portalPos, Quaternion.identity);
+
+        // spawn portal in middle room
+        int middleIndex = placedRooms.Count / 2;
+        // this will be the descend chute later
+
+        Vector3 spawnPos = placedRooms[0].transform.position + Vector3.up * 1f;
+        PhotonNetwork.Instantiate("Player", spawnPos, Quaternion.identity);
+
+        sealOpenConnectors();
         Debug.Log("Generated " + placedRooms.Count + " rooms.");
     }
 
@@ -91,6 +114,46 @@ public class floorGen : MonoBehaviour
 
     bool checkOverlap(GameObject room)
     {
+        Bounds newBounds = getRoomBounds(room);
+
+        foreach (Room placedRoom in placedRooms)
+        {
+            Bounds placedBounds = getRoomBounds(placedRoom.gameObject);
+
+            // shrink bounds slightly to allow wall touching
+            placedBounds.Expand(-0.5f);
+
+            if (newBounds.Intersects(placedBounds))
+                return true;
+        }
         return false;
+    }
+
+    Bounds getRoomBounds(GameObject room)
+    {
+        Renderer[] renderers = room.GetComponentsInChildren<Renderer>();
+        Bounds bounds = renderers[0].bounds;
+        foreach (Renderer r in renderers)
+        {
+            bounds.Encapsulate(r.bounds);
+        }
+        return bounds;
+    }
+
+    void sealOpenConnectors()
+    {
+        foreach (roomConnection connector in openConnectors)
+        {
+            if (connector.isConnected) continue;
+
+            GameObject wall = Instantiate(
+                wallCapPrefab,
+                connector.transform.position,
+                connector.transform.rotation
+            );
+
+            // align wall to face inward
+            wall.transform.rotation = Quaternion.LookRotation(-connector.transform.forward);
+        }
     }
 }
