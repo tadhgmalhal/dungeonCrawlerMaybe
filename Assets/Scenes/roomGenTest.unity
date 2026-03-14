@@ -246,6 +246,52 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &1745070656
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1745070658}
+  - component: {fileID: 1745070657}
+  m_Layer: 0
+  m_Name: stashManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1745070657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745070656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8aa7c52a7ac9ef8af8e5fcbcf7ff81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::stashManager
+  totalJunkValue: 0
+  totalMagicalValue: 0
+--- !u!4 &1745070658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1745070656}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 67.23767, y: 0, z: -9.11531}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2143576156
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,6 +302,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2143576158}
   - component: {fileID: 2143576157}
+  - component: {fileID: 2143576159}
   m_Layer: 0
   m_Name: floorGen
   m_TagString: Untagged
@@ -282,10 +329,12 @@ MonoBehaviour:
   - {fileID: 8567888575226203829, guid: abb49cc578490077fb6eceae5068ad2a, type: 3}
   - {fileID: 4680145903853694492, guid: ad35e1d2d407c1f1f97f270d728e49ac, type: 3}
   - {fileID: 5027131589507452095, guid: e9e3aaecda7a49b63b98d201439b3c77, type: 3}
-  roomCount: 455
+  - {fileID: 780221659310844610, guid: e1c66efd93f3ffd6cacba512b6484864, type: 3}
+  roomCount: 400
   wallCapPrefab: {fileID: 739742010051120722, guid: b887710627e1b6a1c94183fb0836d37a, type: 3}
   portalPrefab: {fileID: 6161342299557638607, guid: e5822a9509d1ab50fbf7babcc5707da5, type: 3}
   playerPrefab: {fileID: 6190984557778849952, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
+  lootGenerator: {fileID: 2143576159}
 --- !u!4 &2143576158
 Transform:
   m_ObjectHideFlags: 0
@@ -301,9 +350,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2143576159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143576156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a765e131c2b06620b9560b3b1ea4a158, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::lootGen
+  lootPrefabs:
+  - {fileID: 2409141002951307973, guid: 1720d084c93eec1ebac6b402f0c9da93, type: 3}
+  - {fileID: 7756479363164073609, guid: d12ca2383c701a3cd95774008fe8fdf7, type: 3}
+  - {fileID: 4515258560265057107, guid: d419b30b1e6337360baa47b1e72a1972, type: 3}
+  - {fileID: 3526022024523390956, guid: f3bea8bc57e7f92c285b8fc6763001ff, type: 3}
+  lootPerRoom: 3
+  lootSpawnHeight: 0.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 70153451}
   - {fileID: 2143576158}
+  - {fileID: 1745070658}
