@@ -10,6 +10,7 @@ public class floorGen : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject wallCapPrefab;
     [SerializeField] private GameObject portalPrefab;
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private lootGen lootGenerator;
 
     private List<Room> placedRooms = new List<Room>();
     private List<roomConnection> openConnectors = new List<roomConnection>();
@@ -42,43 +43,53 @@ public class floorGen : MonoBehaviourPunCallbacks
             allConnectors.Add(connector);
         }
 
-        int attempt = 0;
-
-        while (placedRooms.Count < roomCount && openConnectors.Count > 0 && attempt < 100)
+        while (placedRooms.Count < roomCount && openConnectors.Count > 0)
         {
-            attempt++;
-
             roomConnection currentConnector = openConnectors[0];
             openConnectors.RemoveAt(0);
 
             if (currentConnector.isConnected) continue;
 
-            GameObject newRoomPrefab = roomPrefabs[Random.Range(0, roomPrefabs.Length)];
-            GameObject newRoomObject = Instantiate(newRoomPrefab, Vector3.zero, Quaternion.identity);
-            Room newRoom = newRoomObject.GetComponent<Room>();
-            roomConnection newConnector = newRoom.connectors[Random.Range(0, newRoom.connectors.Length)];
+            int attempt = 0;
+            bool placed = false;
 
-            alignRooms(currentConnector, newConnector);
-
-            Physics.SyncTransforms();
-
-            if (checkOverlap(newRoomObject))
+            while (!placed && attempt < 10)
             {
-                Destroy(newRoomObject);
-                continue;
+                attempt++;
+
+                GameObject newRoomPrefab = roomPrefabs[Random.Range(0, roomPrefabs.Length)];
+                GameObject newRoomObject = Instantiate(newRoomPrefab, Vector3.zero, Quaternion.identity);
+                Room newRoom = newRoomObject.GetComponent<Room>();
+                roomConnection newConnector = newRoom.connectors[Random.Range(0, newRoom.connectors.Length)];
+
+                alignRooms(currentConnector, newConnector);
+                Physics.SyncTransforms();
+
+                if (checkOverlap(newRoomObject))
+                {
+                    Destroy(newRoomObject);
+                    continue;
+                }
+
+                placedRooms.Add(newRoom);
+                currentConnector.isConnected = true;
+                newConnector.isConnected = true;
+
+                foreach (roomConnection connector in newRoom.connectors)
+                {
+                    if (!connector.isConnected)
+                    {
+                        openConnectors.Add(connector);
+                        allConnectors.Add(connector);
+                    }
+                }
+
+                placed = true;
             }
 
-            placedRooms.Add(newRoom);
-            currentConnector.isConnected = true;
-            newConnector.isConnected = true;
-
-            foreach (roomConnection connector in newRoom.connectors)
+            if (!placed)
             {
-                if (!connector.isConnected)
-                {
-                    openConnectors.Add(connector);
-                    allConnectors.Add(connector);
-                }
+                allConnectors.Add(currentConnector);
             }
         }
 
@@ -94,6 +105,8 @@ public class floorGen : MonoBehaviourPunCallbacks
 
         sealOpenConnectors();
         Debug.Log("Generated " + placedRooms.Count + " rooms.");
+
+        lootGenerator.spawnLoot(placedRooms);
     }
 
     void alignRooms(roomConnection current, roomConnection incoming)
