@@ -48,7 +48,6 @@ public class dungeonPortal : MonoBehaviour
 
     private void goHome()
     {
-        Debug.Log("Going home");
-        // bank stash and load cave scene here later
+        gameSceneManager.Instance.returnHome();
     }
 }
