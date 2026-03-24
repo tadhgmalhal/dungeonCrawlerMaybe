@@ -11,6 +11,9 @@ public class floorGen : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject portalPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private lootGen lootGenerator;
+    [SerializeField] private GameObject descendChutePrefab;
+
+    public static int currentFloor = 1;
 
     private List<Room> placedRooms = new List<Room>();
     private List<roomConnection> openConnectors = new List<roomConnection>();
@@ -18,7 +21,14 @@ public class floorGen : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        if (PhotonNetwork.IsConnected)
+        {
+            generate();
+        }
+        else
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public override void OnConnectedToMaster()
@@ -97,6 +107,11 @@ public class floorGen : MonoBehaviourPunCallbacks
         Instantiate(portalPrefab, portalPos, Quaternion.identity);
 
         int middleIndex = placedRooms.Count / 2;
+        if (middleIndex < placedRooms.Count)
+        {
+            Vector3 chutePos = placedRooms[middleIndex].transform.position + Vector3.up * 0.5f;
+            Instantiate(descendChutePrefab, chutePos, Quaternion.identity);
+        }
 
         Vector3 spawnPos = placedRooms[0].transform.position + Vector3.up * 1f;
         PhotonNetwork.Instantiate("Player", spawnPos, Quaternion.identity);
