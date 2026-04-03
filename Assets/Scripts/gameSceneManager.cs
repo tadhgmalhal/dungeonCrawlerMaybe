@@ -6,6 +6,7 @@ using Photon.Realtime;
 public class gameSceneManager : MonoBehaviourPunCallbacks
 {
     public static gameSceneManager Instance;
+    public bool gameStarted = false;
 
     private void Awake()
     {
@@ -22,7 +23,8 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
 
     public void startGame()
     {
-        floorGen.currentFloor = 1;
+        floorGen.currentFloor = 0;
+        gameStarted = true;
         RoomOptions options = new RoomOptions();
         options.MaxPlayers = 4;
         options.IsOpen = true;
@@ -32,7 +34,10 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("roomGenTest");
+        if (gameStarted)
+        {
+            PhotonNetwork.LoadLevel("testLobby");
+        }
     }
 
     public void descendToNextFloor()

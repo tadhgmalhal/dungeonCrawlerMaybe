@@ -275,6 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48b9c9b8d0c97f7bc914178b2acaea1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::gameSceneManager
+  gameStarted: 0
 --- !u!4 &471037299
 Transform:
   m_ObjectHideFlags: 0
@@ -412,6 +413,11 @@ MonoBehaviour:
   - {fileID: 7756479363164073609, guid: d12ca2383c701a3cd95774008fe8fdf7, type: 3}
   - {fileID: 4515258560265057107, guid: d419b30b1e6337360baa47b1e72a1972, type: 3}
   - {fileID: 3526022024523390956, guid: f3bea8bc57e7f92c285b8fc6763001ff, type: 3}
+  - {fileID: 3832184972175876986, guid: bd66c3c58d4d303f5b44fada323c6963, type: 3}
+  - {fileID: 8682440756273409241, guid: eacffc55d24d966d0b3cd6527c4408b4, type: 3}
+  - {fileID: 943178568726431444, guid: f05d46ad4fb3ab97a924658eb9aa91a1, type: 3}
+  - {fileID: 3345051709103010776, guid: 01e8508751b5773189c6f9112e726670, type: 3}
+  - {fileID: 8020386399861647, guid: 95d0fe36a314e7a0095685b1c2b3ae06, type: 3}
   lootPerRoom: 3
   lootSpawnHeight: 0.5
 --- !u!1660057539 &9223372036854775807
