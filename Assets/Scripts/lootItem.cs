@@ -116,6 +116,10 @@ public class lootItem : MonoBehaviour
         transform.SetParent(playerHand);
         transform.localPosition = new Vector3(0.3f, -0.2f, 0.5f);
         transform.localRotation = Quaternion.identity;
+
+        playerHP hp = playerHand.GetComponentInParent<playerHP>();
+        if (hp != null)
+            hp.heldItem = this;
     }
 
     public void Drop()
@@ -125,6 +129,10 @@ public class lootItem : MonoBehaviour
         rb.isKinematic = false;
         foreach (Collider col in GetComponents<Collider>())
             col.enabled = true;
+
+        playerHP hp = GetComponentInParent<playerHP>();
+        if (hp != null)
+            hp.heldItem = null;
     }
 
     public void Throw()
@@ -136,5 +144,9 @@ public class lootItem : MonoBehaviour
         foreach (Collider col in GetComponents<Collider>())
             col.enabled = true;
         rb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
+
+        playerHP hp = GetComponentInParent<playerHP>();
+        if (hp != null)
+            hp.heldItem = null;
     }
 }

@@ -396,6 +396,7 @@ GameObject:
   - component: {fileID: 1799784716080167078}
   - component: {fileID: -7301538891063717651}
   - component: {fileID: 2775775537198310351}
+  - component: {fileID: 3649480713995035438}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -590,3 +591,16 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &3649480713995035438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6190984557778849952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 165f94e2b966f0ddc82f3b566b43da5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::playerHP
+  maxHealth: 100

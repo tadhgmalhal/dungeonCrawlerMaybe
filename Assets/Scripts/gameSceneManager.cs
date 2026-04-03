@@ -6,6 +6,7 @@ using Photon.Realtime;
 public class gameSceneManager : MonoBehaviourPunCallbacks
 {
     public static gameSceneManager Instance;
+    public bool gameStarted = false;
 
     private void Awake()
     {
@@ -22,7 +23,8 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
 
     public void startGame()
     {
-        floorGen.currentFloor = 1;
+        floorGen.currentFloor = 0;
+        gameStarted = true;
         RoomOptions options = new RoomOptions();
         options.MaxPlayers = 4;
         options.IsOpen = true;
@@ -32,7 +34,10 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("roomGenTest");
+        if (gameStarted)
+        {
+            PhotonNetwork.LoadLevel("testLobby");
+        }
     }
 
     public void descendToNextFloor()
@@ -45,6 +50,34 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
     public void returnHome()
     {
         floorGen.currentFloor = 0;
+        bankStash();
         PhotonNetwork.LoadLevel("testLobby");
+    }
+
+    private void bankStash()
+    {
+        if (saveManager.Instance == null) return;
+        if (stashManager.Instance == null) return;
+
+        saveData data = saveManager.Instance.getActiveSave();
+        if (data == null) return;
+
+        // add junk value to cave
+        data.totalLootValue += stashManager.Instance.totalJunkValue;
+
+        // calculate wizard currency from magical value
+        int wizardCut = Mathf.RoundToInt(stashManager.Instance.totalMagicalValue * 0.5f);
+        data.wizardCurrency += wizardCut;
+
+        // update metrics
+        data.totalRuns++;
+
+        // save to disk
+        saveManager.Instance.saveSlot(saveManager.Instance.activeSaveSlot);
+
+        // clear run stash
+        stashManager.Instance.clearRunStash();
+
+        Debug.Log("Banked stash — Loot: " + data.totalLootValue + " Wizard currency: " + data.wizardCurrency);
     }
 }
