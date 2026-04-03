@@ -34,6 +34,8 @@ public class lobbyPortal : MonoBehaviour
 
     private void gameStart()
     {
+        difficultyManager.Instance.reset();
+        difficultyManager.Instance.calculateStartingDifficulty();
         gameSceneManager.Instance.descendToNextFloor();
     }
 }

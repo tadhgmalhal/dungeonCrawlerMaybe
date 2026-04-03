@@ -604,3 +604,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerHP
   maxHealth: 100
+  heldItem: {fileID: 0}

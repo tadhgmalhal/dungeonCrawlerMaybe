@@ -43,6 +43,18 @@ public class floorGen : MonoBehaviourPunCallbacks
 
     void generate()
     {
+        int difficulty;
+        if (difficultyManager.Instance != null)
+        {
+            difficulty = difficultyManager.Instance.currentDifficulty;
+        }
+        else
+        {
+            difficulty = 1;
+        }
+        Debug.Log("Generating floor " + currentFloor + " with difficulty " + difficulty);
+        
+
         GameObject startRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Length)], Vector3.zero, Quaternion.identity);
         Room startRoomComponent = startRoom.GetComponent<Room>();
         placedRooms.Add(startRoomComponent);
