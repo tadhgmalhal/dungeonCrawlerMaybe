@@ -50,6 +50,34 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
     public void returnHome()
     {
         floorGen.currentFloor = 0;
+        bankStash();
         PhotonNetwork.LoadLevel("testLobby");
+    }
+
+    private void bankStash()
+    {
+        if (saveManager.Instance == null) return;
+        if (stashManager.Instance == null) return;
+
+        saveData data = saveManager.Instance.getActiveSave();
+        if (data == null) return;
+
+        // add junk value to cave
+        data.totalLootValue += stashManager.Instance.totalJunkValue;
+
+        // calculate wizard currency from magical value
+        int wizardCut = Mathf.RoundToInt(stashManager.Instance.totalMagicalValue * 0.5f);
+        data.wizardCurrency += wizardCut;
+
+        // update metrics
+        data.totalRuns++;
+
+        // save to disk
+        saveManager.Instance.saveSlot(saveManager.Instance.activeSaveSlot);
+
+        // clear run stash
+        stashManager.Instance.clearRunStash();
+
+        Debug.Log("Banked stash — Loot: " + data.totalLootValue + " Wizard currency: " + data.wizardCurrency);
     }
 }
