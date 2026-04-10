@@ -375,7 +375,7 @@ MonoBehaviour:
   - {fileID: 4680145903853694492, guid: ad35e1d2d407c1f1f97f270d728e49ac, type: 3}
   - {fileID: 5027131589507452095, guid: e9e3aaecda7a49b63b98d201439b3c77, type: 3}
   - {fileID: 780221659310844610, guid: e1c66efd93f3ffd6cacba512b6484864, type: 3}
-  roomCount: 40
+  roomCount: 600
   wallCapPrefab: {fileID: 739742010051120722, guid: b887710627e1b6a1c94183fb0836d37a, type: 3}
   portalPrefab: {fileID: 6161342299557638607, guid: e5822a9509d1ab50fbf7babcc5707da5, type: 3}
   playerPrefab: {fileID: 6190984557778849952, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
@@ -409,15 +409,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::lootGen
   lootPrefabs:
-  - {fileID: 2409141002951307973, guid: 1720d084c93eec1ebac6b402f0c9da93, type: 3}
-  - {fileID: 7756479363164073609, guid: d12ca2383c701a3cd95774008fe8fdf7, type: 3}
-  - {fileID: 4515258560265057107, guid: d419b30b1e6337360baa47b1e72a1972, type: 3}
-  - {fileID: 3526022024523390956, guid: f3bea8bc57e7f92c285b8fc6763001ff, type: 3}
   - {fileID: 3832184972175876986, guid: bd66c3c58d4d303f5b44fada323c6963, type: 3}
   - {fileID: 8682440756273409241, guid: eacffc55d24d966d0b3cd6527c4408b4, type: 3}
   - {fileID: 943178568726431444, guid: f05d46ad4fb3ab97a924658eb9aa91a1, type: 3}
   - {fileID: 3345051709103010776, guid: 01e8508751b5773189c6f9112e726670, type: 3}
   - {fileID: 8020386399861647, guid: 95d0fe36a314e7a0095685b1c2b3ae06, type: 3}
+  - {fileID: 8954913691807827773, guid: 95f0c8afbe0cc54c8a42ca5ff169c106, type: 3}
   lootPerRoom: 3
   lootSpawnHeight: 0.5
 --- !u!1660057539 &9223372036854775807

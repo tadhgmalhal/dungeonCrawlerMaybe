@@ -43,6 +43,12 @@ public class gameSceneManager : MonoBehaviourPunCallbacks
     public void descendToNextFloor()
     {
         floorGen.currentFloor++;
+        
+        if (floorGen.currentFloor != 1)
+        {
+        difficultyManager.Instance.advanceDifficulty(floorGen.currentFloor);
+        }
+
         Debug.Log("Loading floor " + floorGen.currentFloor);
         PhotonNetwork.LoadLevel("roomGenTest");
     }

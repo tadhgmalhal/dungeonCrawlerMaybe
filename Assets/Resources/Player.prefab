@@ -484,7 +484,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6190984557778849952}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: c1cba94ef114da3adb3c2358e2e76717, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -604,3 +604,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::playerHP
   maxHealth: 100
+  heldItem: {fileID: 0}
