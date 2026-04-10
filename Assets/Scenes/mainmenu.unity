@@ -2953,6 +2953,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48b9c9b8d0c97f7bc914178b2acaea1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::gameSceneManager
+  gameStarted: 0
 --- !u!4 &1544701003
 Transform:
   m_ObjectHideFlags: 0
@@ -3544,6 +3545,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1 &1731767871
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1731767873}
+  - component: {fileID: 1731767872}
+  m_Layer: 0
+  m_Name: difficultyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1731767872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731767871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53b63e8becad5db81ab03b1750a16f1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::difficultyManager
+  currentDifficulty: 1
+  startingDifficulty: 1
+  portalModifier: 0
+--- !u!4 &1731767873
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731767871}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -13.50847, y: 0, z: -34.46628}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1731935178
 GameObject:
   m_ObjectHideFlags: 0
@@ -4431,3 +4479,4 @@ SceneRoots:
   - {fileID: 680594389}
   - {fileID: 1544701003}
   - {fileID: 1298242243}
+  - {fileID: 1731767873}

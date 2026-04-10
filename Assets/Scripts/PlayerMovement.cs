@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviourPun
     private float currentStamina;
     private float coyoteTimer = 0f;
     private bool wasGrounded = false;
+    private bool isJumping = false;
 
     //sack mechanic, to be added
     [HideInInspector] public int sackStage = 0;
@@ -73,8 +74,15 @@ public class PlayerMovement : MonoBehaviourPun
         currentStamina = maxStamina;
     }
 
-    void OnEnable() => controls.Enable();
-    void OnDisable() => controls.Disable();
+    void OnEnable()
+    {
+        if (controls != null) controls.Enable();
+    }
+
+    void OnDisable()
+    {
+        if (controls != null) controls.Disable();
+    }
 
     void Update()
     {
@@ -100,6 +108,7 @@ public class PlayerMovement : MonoBehaviourPun
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             coyoteTimer = 0f;
+            isJumping = true;
         }
         jumpPressed = false;
 
@@ -144,42 +153,50 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        bool isMoving = moveInput.magnitude > 0.1f;
-        bool activelySprinting = isSprinting && currentStamina > 0f && isMoving;
+        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
 
-        // determine speed based on sack stage and stamina
+        float yVelocity;
+        if (IsGrounded() && rb.linearVelocity.y <= -1f)
+        {
+            yVelocity = -0.5f;
+            isJumping = false;
+        }
+        else
+        {
+            yVelocity = rb.linearVelocity.y + (gravityForce * Time.fixedDeltaTime);
+            yVelocity = Mathf.Max(yVelocity, -20f);
+        }
+
+        bool activelySprinting = isSprinting && currentStamina > 0f && move.magnitude > 0.1f;
+
         float targetSpeed;
         if (activelySprinting)
         {
             if (sackStage == 1)
-                targetSpeed = sprintSpeed * 0.5f; // half sprint when stage 1
+                targetSpeed = sprintSpeed * 0.5f;
             else if (sackStage == 2)
-                targetSpeed = walkSpeed; // sprint speed equals walk when full
+                targetSpeed = walkSpeed;
             else
-                targetSpeed = sprintSpeed; // full sprint when empty
+                targetSpeed = sprintSpeed;
         }
         else
         {
             targetSpeed = walkSpeed;
         }
 
-        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
-        Vector3 velocity = move * targetSpeed + Vector3.up * rb.linearVelocity.y;
-        rb.linearVelocity = velocity;
+        rb.linearVelocity = new Vector3(move.x * targetSpeed, yVelocity, move.z * targetSpeed);
 
-        if (!IsGrounded())
-            rb.AddForce(Vector3.up * gravityForce, ForceMode.Acceleration);
-
-        if (!isMoving)
-            noiseLevel = 0f;
-        else if (activelySprinting)
-            noiseLevel = 5f;
+        if (!activelySprinting)
+            noiseLevel = move.magnitude > 0.1f ? 1f : 0f;
         else
-            noiseLevel = 1f;
+            noiseLevel = 5f;
     }
 
     bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        CapsuleCollider col = GetComponent<CapsuleCollider>();
+        float worldHalfHeight = (col.height * transform.localScale.y) / 2f;
+        float rayLength = worldHalfHeight + 0.01f;
+        return Physics.Raycast(transform.position, Vector3.down, rayLength, ~LayerMask.GetMask("Player"));
     }
 }
