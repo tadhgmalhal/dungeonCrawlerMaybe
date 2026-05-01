@@ -140,7 +140,7 @@ public class lootItem : MonoBehaviour
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f)
-        ) * throwForce * 0.2f;
+        ) * throwForce * 0.02f;
         rb.AddTorque(randomTorque, ForceMode.Impulse);
         playerHP hp = mainCam.GetComponentInParent<playerHP>();
         if (hp != null)
@@ -157,7 +157,7 @@ public class lootItem : MonoBehaviour
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f)
-        ) * collision.relativeVelocity.magnitude * 0.3f;
+        ) * collision.relativeVelocity.magnitude * 0.03f;
         rb.AddTorque(kickTorque, ForceMode.Impulse);
     }
 }

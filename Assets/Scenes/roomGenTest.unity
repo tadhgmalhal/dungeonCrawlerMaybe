@@ -291,6 +291,70 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1253734459
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1253734461}
+  - component: {fileID: 1253734460}
+  m_Layer: 0
+  m_Name: dungeonRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1253734460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253734459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
+--- !u!4 &1253734461
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253734459}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.6993, y: -0, z: -5.22268}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1745070656
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,12 +439,15 @@ MonoBehaviour:
   - {fileID: 4680145903853694492, guid: ad35e1d2d407c1f1f97f270d728e49ac, type: 3}
   - {fileID: 5027131589507452095, guid: e9e3aaecda7a49b63b98d201439b3c77, type: 3}
   - {fileID: 780221659310844610, guid: e1c66efd93f3ffd6cacba512b6484864, type: 3}
-  roomCount: 600
+  roomCount: 30
   wallCapPrefab: {fileID: 739742010051120722, guid: b887710627e1b6a1c94183fb0836d37a, type: 3}
   portalPrefab: {fileID: 6161342299557638607, guid: e5822a9509d1ab50fbf7babcc5707da5, type: 3}
   playerPrefab: {fileID: 6190984557778849952, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
   lootGenerator: {fileID: 2143576159}
   descendChutePrefab: {fileID: 6008374233076696314, guid: 8beaafa15b1ac610aacd681da849c2e0, type: 3}
+  navMeshSurface: {fileID: 1253734460}
+  dungeonRoot: {fileID: 1253734461}
+  spiderPrefab: {fileID: 3273356322838914693, guid: b9a8220da4e2fef4c9e94e0c81cdfeff, type: 3}
 --- !u!4 &2143576158
 Transform:
   m_ObjectHideFlags: 0
@@ -425,3 +492,4 @@ SceneRoots:
   - {fileID: 2143576158}
   - {fileID: 1745070658}
   - {fileID: 471037299}
+  - {fileID: 1253734461}
