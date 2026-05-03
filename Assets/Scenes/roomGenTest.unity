@@ -291,6 +291,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &717174616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 717174618}
+  - component: {fileID: 717174617}
+  m_Layer: 0
+  m_Name: enemySpawnManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &717174617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717174616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dea4ad8e2d603fdf6a76d887547c76c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::enemySpawnManager
+  spiderPrefab: {fileID: 3273356322838914693, guid: b9a8220da4e2fef4c9e94e0c81cdfeff, type: 3}
+  abundanceGem: 0
+  scarcityGem: 0
+  hellGem: 0
+  depthGem: 0
+--- !u!4 &717174618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717174616}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.16422, y: 0, z: -15.21725}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1253734459
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,7 +488,6 @@ MonoBehaviour:
   - {fileID: 4680145903853694492, guid: ad35e1d2d407c1f1f97f270d728e49ac, type: 3}
   - {fileID: 5027131589507452095, guid: e9e3aaecda7a49b63b98d201439b3c77, type: 3}
   - {fileID: 780221659310844610, guid: e1c66efd93f3ffd6cacba512b6484864, type: 3}
-  roomCount: 30
   wallCapPrefab: {fileID: 739742010051120722, guid: b887710627e1b6a1c94183fb0836d37a, type: 3}
   portalPrefab: {fileID: 6161342299557638607, guid: e5822a9509d1ab50fbf7babcc5707da5, type: 3}
   playerPrefab: {fileID: 6190984557778849952, guid: bc8a316a2a7ed54299d6cc9ba16871bd, type: 3}
@@ -447,7 +495,7 @@ MonoBehaviour:
   descendChutePrefab: {fileID: 6008374233076696314, guid: 8beaafa15b1ac610aacd681da849c2e0, type: 3}
   navMeshSurface: {fileID: 1253734460}
   dungeonRoot: {fileID: 1253734461}
-  spiderPrefab: {fileID: 3273356322838914693, guid: b9a8220da4e2fef4c9e94e0c81cdfeff, type: 3}
+  placedRooms: []
 --- !u!4 &2143576158
 Transform:
   m_ObjectHideFlags: 0
@@ -493,3 +541,4 @@ SceneRoots:
   - {fileID: 1745070658}
   - {fileID: 471037299}
   - {fileID: 1253734461}
+  - {fileID: 717174618}

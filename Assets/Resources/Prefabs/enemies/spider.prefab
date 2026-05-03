@@ -217,10 +217,10 @@ MonoBehaviour:
   searchDuration: 20
   biteRange: 2.5
   windupDuration: 0.5
-  biteDamage: 25
+  biteDamage: 0
   attackCooldown: 3
   hurtboxDuration: 0.25
-  hurtboxRadius: 0.5
+  hurtboxRadius: 0.25
 --- !u!1 &8282587744287274656
 GameObject:
   m_ObjectHideFlags: 0

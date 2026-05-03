@@ -8,7 +8,6 @@ public class floorGen : MonoBehaviourPunCallbacks
 {
     [Header("Room Settings")]
     [SerializeField] private GameObject[] roomPrefabs;
-    [SerializeField] private int roomCount = 10;
     [SerializeField] private GameObject wallCapPrefab;
     [SerializeField] private GameObject portalPrefab;
     [SerializeField] private GameObject playerPrefab;
@@ -17,14 +16,12 @@ public class floorGen : MonoBehaviourPunCallbacks
     [SerializeField] private NavMeshSurface navMeshSurface;
     [SerializeField] private Transform dungeonRoot;
 
-    [Header("Enemies")]
-    [SerializeField] private GameObject spiderPrefab;
-
     public static int currentFloor = 1;
+    public List<Room> placedRooms = new List<Room>();
 
-    private List<Room> placedRooms = new List<Room>();
     private List<roomConnection> openConnectors = new List<roomConnection>();
     private List<roomConnection> allConnectors = new List<roomConnection>();
+    private int roomCount;
 
     void Start()
     {
@@ -48,6 +45,14 @@ public class floorGen : MonoBehaviourPunCallbacks
         generate();
     }
 
+    int calculateRoomCount(int floor, int difficulty)
+    {
+        float floorT = (float)(floor - 1) / 9f;
+        float diffT = (float)(difficulty - 1) / 19f;
+        int rooms = 100 + Mathf.FloorToInt((floorT * 0.4f + diffT * 0.6f) * 900f);
+        return Mathf.Clamp(rooms, 100, 1000);
+    }
+
     void generate()
     {
         int difficulty;
@@ -59,8 +64,9 @@ public class floorGen : MonoBehaviourPunCallbacks
         {
             difficulty = 1;
         }
-        Debug.Log("Generating floor " + currentFloor + " with difficulty " + difficulty);
-        
+
+        roomCount = calculateRoomCount(currentFloor, difficulty);
+        Debug.Log("Generating floor " + currentFloor + " with difficulty " + difficulty + " and " + roomCount + " rooms.");
 
         GameObject startRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Length)], Vector3.zero, Quaternion.identity);
         startRoom.transform.parent = dungeonRoot;
@@ -144,7 +150,6 @@ public class floorGen : MonoBehaviourPunCallbacks
 
         lootGenerator.spawnLoot(placedRooms);
 
-        Debug.Log("Starting NavMesh bake coroutine...");
         StartCoroutine(buildNavMeshNextFrame());
     }
 
@@ -231,17 +236,13 @@ public class floorGen : MonoBehaviourPunCallbacks
     IEnumerator buildNavMeshNextFrame()
     {
         yield return new WaitForEndOfFrame();
-        Debug.Log("Building NavMesh...");
         navMeshSurface.BuildNavMesh();
-        Debug.Log("NavMesh built.");
         StartCoroutine(spawnEnemies());
     }
 
     IEnumerator spawnEnemies()
     {
         yield return null;
-        Room randomRoom = placedRooms[Random.Range(10, placedRooms.Count)];
-        Vector3 spiderSpawn = randomRoom.transform.position + Vector3.up * 1f;
-        Instantiate(spiderPrefab, spiderSpawn, Quaternion.identity);
+        enemySpawnManager.Instance.spawnEnemiesForFloor(placedRooms, currentFloor);
     }
 }
