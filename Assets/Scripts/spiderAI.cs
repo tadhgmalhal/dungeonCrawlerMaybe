@@ -12,7 +12,6 @@ public class spiderAI : MonoBehaviour
     [Header("Movement")]
     public float chaseSpeed = 4f;
     public float roamSpeed = 2f;
-    public float roamRadius = 10f;
     public float roamWaitMin = 2f;
     public float roamWaitMax = 5f;
 
@@ -20,23 +19,53 @@ public class spiderAI : MonoBehaviour
     public float searchRadius = 8f;
     public float searchDuration = 20f;
 
+    [Header("Attack")]
+    public float biteRange = 1.5f;
+    public float windupDuration = 1f;
+    public float biteDamage = 25f;
+    public float attackCooldown = 3f;
+    public float hurtboxDuration = 0.25f;
+    public float hurtboxRadius = 0.5f;
+
     private NavMeshAgent agent;
     private Transform target;
     private Vector3 lastKnownPosition;
     private float searchTimer = 0f;
     private float roamTimer = 0f;
+    private float windupTimer = 0f;
+    private float cooldownTimer = 0f;
+    private bool isWindingUp = false;
+    private Vector3 hurtboxPosition;
+    private float hurtboxTimer = 0f;
+    private bool hurtboxActive = false;
 
-    private enum SpiderState { Roam, Chase, Search }
+    private enum SpiderState { Roam, Chase, Search, Attack }
     private SpiderState state = SpiderState.Roam;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.stoppingDistance = biteRange;
         roamTimer = Random.Range(roamWaitMin, roamWaitMax);
     }
 
     void Update()
     {
+        if (cooldownTimer > 0f)
+        {
+            cooldownTimer -= Time.deltaTime;
+        }
+
+        if (hurtboxActive)
+        {
+            hurtboxTimer -= Time.deltaTime;
+            checkHurtbox();
+            if (hurtboxTimer <= 0f)
+            {
+                hurtboxActive = false;
+            }
+        }
+
         switch (state)
         {
             case SpiderState.Roam:
@@ -48,18 +77,24 @@ public class spiderAI : MonoBehaviour
             case SpiderState.Search:
                 handleSearch();
                 break;
+            case SpiderState.Attack:
+                handleAttack();
+                break;
         }
     }
 
     void handleRoam()
     {
         agent.speed = roamSpeed;
-        roamTimer -= Time.deltaTime;
 
-        if (roamTimer <= 0f)
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
-            setRandomDestination(transform.position, roamRadius * 5f);
-            roamTimer = Random.Range(roamWaitMin, roamWaitMax);
+            roamTimer -= Time.deltaTime;
+            if (roamTimer <= 0f)
+            {
+                setRandomDestination(transform.position, 200f);
+                roamTimer = Random.Range(roamWaitMin, roamWaitMax);
+            }
         }
 
         Transform player = getPlayerInRange();
@@ -80,6 +115,17 @@ public class spiderAI : MonoBehaviour
             return;
         }
 
+        float dist = Vector3.Distance(transform.position, target.position);
+
+        if (dist <= biteRange && cooldownTimer <= 0f)
+        {
+            agent.ResetPath();
+            state = SpiderState.Attack;
+            isWindingUp = true;
+            windupTimer = windupDuration;
+            return;
+        }
+
         agent.SetDestination(target.position);
         lastKnownPosition = target.position;
 
@@ -91,15 +137,69 @@ public class spiderAI : MonoBehaviour
         }
     }
 
+    void handleAttack()
+    {
+        agent.ResetPath();
+
+        if (isWindingUp)
+        {
+            windupTimer -= Time.deltaTime;
+            if (windupTimer <= 0f)
+            {
+                isWindingUp = false;
+                spawnHurtbox();
+                cooldownTimer = attackCooldown;
+            }
+        }
+        else
+        {
+            if (target != null)
+            {
+                state = SpiderState.Chase;
+            }
+            else
+            {
+                enterSearch(transform.position);
+            }
+        }
+    }
+
+    void spawnHurtbox()
+    {
+        if (target == null) return;
+        hurtboxPosition = target.position;
+        hurtboxActive = true;
+        hurtboxTimer = hurtboxDuration;
+    }
+
+    void checkHurtbox()
+    {
+        Collider[] hits = Physics.OverlapSphere(hurtboxPosition, hurtboxRadius, LayerMask.GetMask("Player"));
+        foreach (Collider hit in hits)
+        {
+            playerHP hp = hit.GetComponent<playerHP>();
+            if (hp != null)
+            {
+                hp.takeDamage(biteDamage);
+                hurtboxActive = false;
+                return;
+            }
+        }
+    }
+
     void handleSearch()
     {
         agent.speed = roamSpeed;
         searchTimer -= Time.deltaTime;
 
-        if (roamTimer <= 0f)
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
-            setRandomDestination(lastKnownPosition, searchRadius);
-            roamTimer = Random.Range(roamWaitMin, roamWaitMax);
+            roamTimer -= Time.deltaTime;
+            if (roamTimer <= 0f)
+            {
+                setRandomDestination(lastKnownPosition, searchRadius);
+                roamTimer = Random.Range(roamWaitMin, roamWaitMax);
+            }
         }
 
         Transform player = getPlayerInRange();
@@ -127,12 +227,22 @@ public class spiderAI : MonoBehaviour
 
     void setRandomDestination(Vector3 anchor, float radius)
     {
-        Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += anchor;
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
+        float minDistance = 15f;
+        int maxAttempts = 10;
+
+        for (int i = 0; i < maxAttempts; i++)
         {
-            agent.SetDestination(hit.position);
+            Vector3 randomDirection = anchor + Random.insideUnitSphere * radius;
+            randomDirection.y = anchor.y;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
+            {
+                if (Vector3.Distance(anchor, hit.position) >= minDistance)
+                {
+                    agent.SetDestination(hit.position);
+                    return;
+                }
+            }
         }
     }
 
@@ -200,6 +310,11 @@ public class spiderAI : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, loseRange);
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, peripheralRange);
+        if (hurtboxActive)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(hurtboxPosition, hurtboxRadius);
+        }
         if (state == SpiderState.Search)
         {
             Gizmos.color = Color.blue;

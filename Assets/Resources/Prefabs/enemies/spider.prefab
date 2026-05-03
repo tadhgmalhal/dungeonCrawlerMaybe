@@ -205,17 +205,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3215f466a174e8919bd99e5c584f6ea0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::spiderAI
-  forwardRange: 10
-  peripheralRange: 3.33
-  forwardAngle: 120
-  loseRange: 15
-  chaseSpeed: 4
+  forwardRange: 15
+  peripheralRange: 5
+  forwardAngle: 180
+  loseRange: 20
+  chaseSpeed: 4.5
   roamSpeed: 2
-  roamRadius: 10
-  roamWaitMin: 2
-  roamWaitMax: 5
+  roamWaitMin: 0.5
+  roamWaitMax: 1.5
   searchRadius: 8
   searchDuration: 20
+  biteRange: 2.5
+  windupDuration: 0.5
+  biteDamage: 25
+  attackCooldown: 3
+  hurtboxDuration: 0.25
+  hurtboxRadius: 0.5
 --- !u!1 &8282587744287274656
 GameObject:
   m_ObjectHideFlags: 0
