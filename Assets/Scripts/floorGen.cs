@@ -1,23 +1,27 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using Photon.Pun;
+using Unity.AI.Navigation;
 
 public class floorGen : MonoBehaviourPunCallbacks
 {
     [Header("Room Settings")]
     [SerializeField] private GameObject[] roomPrefabs;
-    [SerializeField] private int roomCount = 10;
     [SerializeField] private GameObject wallCapPrefab;
     [SerializeField] private GameObject portalPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private lootGen lootGenerator;
     [SerializeField] private GameObject descendChutePrefab;
+    [SerializeField] private NavMeshSurface navMeshSurface;
+    [SerializeField] private Transform dungeonRoot;
 
     public static int currentFloor = 1;
+    public List<Room> placedRooms = new List<Room>();
 
-    private List<Room> placedRooms = new List<Room>();
     private List<roomConnection> openConnectors = new List<roomConnection>();
     private List<roomConnection> allConnectors = new List<roomConnection>();
+    private int roomCount;
 
     void Start()
     {
@@ -41,6 +45,14 @@ public class floorGen : MonoBehaviourPunCallbacks
         generate();
     }
 
+    int calculateRoomCount(int floor, int difficulty)
+    {
+        float floorT = (float)(floor - 1) / 9f;
+        float diffT = (float)(difficulty - 1) / 19f;
+        int rooms = 100 + Mathf.FloorToInt((floorT * 0.4f + diffT * 0.6f) * 900f);
+        return Mathf.Clamp(rooms, 100, 1000);
+    }
+
     void generate()
     {
         int difficulty;
@@ -52,10 +64,12 @@ public class floorGen : MonoBehaviourPunCallbacks
         {
             difficulty = 1;
         }
-        Debug.Log("Generating floor " + currentFloor + " with difficulty " + difficulty);
-        
+
+        roomCount = calculateRoomCount(currentFloor, difficulty);
+        Debug.Log("Generating floor " + currentFloor + " with difficulty " + difficulty + " and " + roomCount + " rooms.");
 
         GameObject startRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Length)], Vector3.zero, Quaternion.identity);
+        startRoom.transform.parent = dungeonRoot;
         Room startRoomComponent = startRoom.GetComponent<Room>();
         placedRooms.Add(startRoomComponent);
 
@@ -81,6 +95,7 @@ public class floorGen : MonoBehaviourPunCallbacks
 
                 GameObject newRoomPrefab = roomPrefabs[Random.Range(0, roomPrefabs.Length)];
                 GameObject newRoomObject = Instantiate(newRoomPrefab, Vector3.zero, Quaternion.identity);
+                newRoomObject.transform.parent = dungeonRoot;
                 Room newRoom = newRoomObject.GetComponent<Room>();
                 roomConnection newConnector = newRoom.connectors[Random.Range(0, newRoom.connectors.Length)];
 
@@ -134,6 +149,8 @@ public class floorGen : MonoBehaviourPunCallbacks
         Debug.Log("Generated " + placedRooms.Count + " rooms.");
 
         lootGenerator.spawnLoot(placedRooms);
+
+        StartCoroutine(buildNavMeshNextFrame());
     }
 
     void alignRooms(roomConnection current, roomConnection incoming)
@@ -188,15 +205,44 @@ public class floorGen : MonoBehaviourPunCallbacks
             if (connector == null) continue;
             if (connector.isConnected) continue;
 
+            bool hasNeighbor = false;
+            foreach (roomConnection other in allConnectors)
+            {
+                if (other == null) continue;
+                if (other == connector) continue;
+                if (!other.isConnected) continue;
+
+                float dist = Vector3.Distance(connector.transform.position, other.transform.position);
+                if (dist < 0.5f)
+                {
+                    hasNeighbor = true;
+                    break;
+                }
+            }
+
+            if (hasNeighbor) continue;
+
             GameObject wall = Instantiate(
                 wallCapPrefab,
                 connector.transform.position,
                 connector.transform.rotation
             );
-
             wall.transform.rotation = Quaternion.LookRotation(-connector.transform.forward);
             sealedCount++;
         }
         Debug.Log("Sealed " + sealedCount + " connectors");
+    }
+
+    IEnumerator buildNavMeshNextFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        navMeshSurface.BuildNavMesh();
+        StartCoroutine(spawnEnemies());
+    }
+
+    IEnumerator spawnEnemies()
+    {
+        yield return null;
+        enemySpawnManager.Instance.spawnEnemiesForFloor(placedRooms, currentFloor);
     }
 }

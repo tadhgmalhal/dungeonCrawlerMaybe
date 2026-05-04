@@ -11,12 +11,12 @@ public class lootItem : MonoBehaviour
     public bool isDeposited = false;
 
     private bool isHeld = false;
-    private Transform holdTarget;
     private Rigidbody rb;
     private Outline outline;
     private float holdTimer = 0f;
     private bool qHeld = false;
     private static Camera mainCam;
+    private Transform playerTransform;
 
     private void Start()
     {
@@ -36,8 +36,6 @@ public class lootItem : MonoBehaviour
     {
         if (isHeld)
         {
-            transform.position = ItemHoldTarget.instance.transform.position;
-            transform.rotation = ItemHoldTarget.instance.transform.rotation;
             HandleHeldInput();
         }
         else
@@ -58,10 +56,7 @@ public class lootItem : MonoBehaviour
                 if (outline != null) outline.enabled = true;
                 if (Keyboard.current.eKey.wasPressedThisFrame)
                 {
-                    if (ItemHoldTarget.instance != null)
-                    {
-                        PickUp();
-                    }
+                    PickUp();
                 }
                 return;
             }
@@ -100,9 +95,12 @@ public class lootItem : MonoBehaviour
             col.enabled = false;
         }
         if (outline != null) outline.enabled = false;
-        transform.SetParent(null);
-
-        playerHP hp = mainCam.GetComponentInParent<playerHP>();
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            r.enabled = false;
+        }
+        playerTransform = mainCam.transform.parent;
+        playerHP hp = playerTransform.GetComponent<playerHP>();
         if (hp != null)
         {
             hp.heldItem = this;
@@ -112,41 +110,52 @@ public class lootItem : MonoBehaviour
     public void Drop()
     {
         isHeld = false;
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            r.enabled = true;
+        }
         rb.isKinematic = false;
         transform.localScale = Vector3.one;
+        transform.position = playerTransform.position + playerTransform.forward * 1f;
         foreach (Collider col in GetComponents<Collider>())
         {
             col.enabled = true;
         }
-        playerHP hp = mainCam.GetComponentInParent<playerHP>();
+        playerHP hp = playerTransform.GetComponent<playerHP>();
         if (hp != null)
         {
             hp.heldItem = null;
         }
+        playerTransform = null;
     }
 
     public void Throw()
     {
-        Vector3 throwDirection = ItemHoldTarget.instance.transform.forward;
         isHeld = false;
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            r.enabled = true;
+        }
         rb.isKinematic = false;
         transform.localScale = Vector3.one;
+        transform.position = playerTransform.position + playerTransform.forward * 1f;
         foreach (Collider col in GetComponents<Collider>())
         {
             col.enabled = true;
         }
-        rb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
+        rb.AddForce(mainCam.transform.forward * throwForce, ForceMode.Impulse);
         Vector3 randomTorque = new Vector3(
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f)
-        ) * throwForce * 0.2f;
+        ) * throwForce * 0.02f;
         rb.AddTorque(randomTorque, ForceMode.Impulse);
-        playerHP hp = mainCam.GetComponentInParent<playerHP>();
+        playerHP hp = playerTransform.GetComponent<playerHP>();
         if (hp != null)
         {
             hp.heldItem = null;
         }
+        playerTransform = null;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -157,7 +166,7 @@ public class lootItem : MonoBehaviour
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f),
             Random.Range(-1f, 1f)
-        ) * collision.relativeVelocity.magnitude * 0.3f;
+        ) * collision.relativeVelocity.magnitude * 0.03f;
         rb.AddTorque(kickTorque, ForceMode.Impulse);
     }
 }
